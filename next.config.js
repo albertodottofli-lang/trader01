@@ -1,10 +1,9 @@
-const nextConfig = { reactStrictMode: true }; export default nextConfig;
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    appDir: false, // <---- AGGIUNGI QUESTO
+    appDir: false, // forza disattivazione App Router
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
