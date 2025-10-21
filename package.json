@@ -1,12 +1,12 @@
 {
-  "name": "nasdaq-dashboard",
+  "name": "trader01",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "prisma": "prisma"
   },
   "dependencies": {
     "next": "14.2.5",
@@ -15,6 +15,11 @@
     "tailwindcss": "^3.4.1",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.31",
-    "yahoo-finance2": "^2.11.0"
+    "yahoo-finance2": "^2.11.0",
+    "recharts": "^2.4.0",
+    "@prisma/client": "^5.10.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.1"
   }
 }

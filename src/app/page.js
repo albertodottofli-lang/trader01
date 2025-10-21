@@ -1,54 +1,43 @@
 'use client';
-
 import { useEffect, useState } from 'react';
+import StockList from './components/StockList';
+import ControlsPanel from './components/ControlsPanel';
+import PortfolioPanel from './components/PortfolioPanel';
+import HistoryPanel from './components/HistoryPanel';
+import PerformanceChart from './components/PerformanceChart';
 
-export default function Home() {
-  const [stocks, setStocks] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function Page() {
+  const tickers = ['AAPL','MSFT','AMZN','GOOG','META','NVDA','TSLA','NFLX','INTC','AMD'];
+  const [portfolio, setPortfolio] = useState(null);
+  const [settings, setSettings] = useState({});
 
-  useEffect(() => {
-    fetch('/api/stocks')
-      .then(res => res.json())
-      .then(data => {
-        setStocks(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+  async function reload() {
+    const res = await fetch('/api/portfolio');
+    const data = await res.json();
+    setPortfolio(data);
+    const s = {};
+    (data.settings||[]).forEach(item=>s[item.key]=item.value);
+    setSettings(s);
+  }
+
+  useEffect(()=>{ reload(); const i=setInterval(()=>{ fetch('/api/trading',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ tickers, buyThreshold: Number(settings.buyThreshold||1), sellThreshold: Number(settings.sellThreshold||5), maxPctPerSymbol:Number(settings.maxPct||10), maxSharesPerSymbol:Number(settings.maxShares||50) }) }).then(()=>reload()); reload(); }, Number(process.env.NEXT_PUBLIC_UPDATE_INTERVAL || 30000)); return ()=>clearInterval(i); },[settings]);
 
   return (
-    <main className="p-10 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">📊 Nasdaq Dashboard</h1>
-      {loading ? (
-        <p className="text-gray-600">Caricamento dati in corso...</p>
-      ) : (
-        <table className="w-full bg-white rounded-2xl shadow-lg">
-          <thead>
-            <tr className="bg-gray-200 text-left">
-              <th className="p-3">Titolo</th>
-              <th className="p-3">Ticker</th>
-              <th className="p-3">Prezzo Attuale</th>
-              <th className="p-3">Prezzo Apertura</th>
-              <th className="p-3">Differenza</th>
-              <th className="p-3">RSI</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stocks.map(stock => (
-              <tr key={stock.symbol} className="border-t hover:bg-gray-50">
-                <td className="p-3">{stock.name}</td>
-                <td className="p-3 font-mono">{stock.symbol}</td>
-                <td className="p-3">{stock.price?.toFixed(2)} $</td>
-                <td className="p-3">{stock.open?.toFixed(2)} $</td>
-                <td className={`p-3 ${stock.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {stock.change?.toFixed(2)} $
-                </td>
-                <td className="p-3">{stock.rsi}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+    <main className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Trader01 - Integrated Dashboard</h1>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2">
+          <StockList tickers={tickers} />
+          <ControlsPanel tickers={tickers} onReload={reload} settings={settings} />
+        </div>
+        <div className="col-span-1">
+          <PortfolioPanel portfolio={portfolio} onReload={reload} />
+          <PerformanceChart portfolio={portfolio} />
+        </div>
+      </div>
+      <div className="mt-6">
+        <HistoryPanel portfolio={portfolio} />
+      </div>
     </main>
   );
 }

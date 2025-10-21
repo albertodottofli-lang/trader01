@@ -1,27 +1,34 @@
-# 📊 Nasdaq Dashboard
+# Trader01 - Integrated Trading Simulator (SQLite + Prisma)
 
-App Next.js + Yahoo Finance API + TailwindCSS.
+Features:
+- Integrated single-page dashboard with Market Overview, Portfolio, Automation, Chart, History
+- SQLite database via Prisma for persistence (data/trader.db)
+- Yahoo Finance data via yahoo-finance2
+- Automation runs every 30s (frontend triggers POST /api/trading)
 
-Mostra i principali titoli del NASDAQ con:
-- Nome e ticker
-- Prezzo attuale
-- Prezzo di apertura
-- Differenza
-- RSI (se disponibile)
+## Setup (local)
 
-## ⚙️ Setup locale
+1. Install dependencies
 
 ```bash
-git clone https://github.com/albertodottofli-lang/trader01.git
-cd trader01
 npm install
+```
+
+2. Initialize Prisma and apply migrations (run locally):
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+3. Run dev server
+
+```bash
 npm run dev
 ```
 
-Apri [http://localhost:3000](http://localhost:3000).
+4. Open http://localhost:3000
 
-## 🚀 Deploy su Vercel
-
-1. Carica il progetto su GitHub.
-2. Vai su [https://vercel.com](https://vercel.com).
-3. Clicca **New Project**, seleziona il repo e premi **Deploy**.
+Notes:
+- The included `data/trader.db` file is an empty placeholder. After running `prisma migrate dev`, the SQLite file will be created.
+- On Vercel, filesystem is ephemeral; consider using an external DB for production.
