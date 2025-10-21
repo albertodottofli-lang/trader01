@@ -1,0 +1,1 @@
+import './globals.css'; export const metadata={title:'NASDAQ AI Dashboard'}; export default function RootLayout({children}){ return (<html><body>{children}</body></html>); }

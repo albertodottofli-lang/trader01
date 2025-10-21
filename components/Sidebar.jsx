@@ -1,0 +1,1 @@
+export default function Sidebar(){ return (<div className='p-4 text-sm small-muted'><h2 className='text-lg font-semibold mb-2'>Controls</h2><p>Capital iniziale: $10,000</p><p className='mt-2'>Aggiornamento: ogni 1s</p><p className='mt-4'>Automazione: ON</p></div>); }
